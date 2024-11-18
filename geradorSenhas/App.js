@@ -1,24 +1,42 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native';
 import { useState } from 'react';
-import { ModalPassword } from './src/components/modal';
+
+//** NOVO:Importações para navegação ***//
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+/*** Fim das novas importações para navegação**/
+
+import SavePasswords from '@./src/screens/SavedPasswords'; //*** NOVO: Tela de Senhas Salvas**/
+import { ModalPassword } from './src/components/modal/index';
 
  
 let charset = "abcdefghijklmnopqrstuvwxyz!#$&%0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
  
-export default function App() {
-  const [senhaGerada, setSenhaGerada] = useState("")
-  const [modalVisible, setModalVisible] = useState(false)
- 
+const Stack = createStackNavigator();
+
+function HomeScreen({ navigation }) {
+  const[senhaGerada, setSenhaGerada] = useState("");
+  const[modalVisible, setModalVisible] = useState(false);
+  const[senhsavedPassword, setSavedPassword] = useState([]);
+
+
   function gerarSenha() {
     let senha = "";
- 
+
     for (let i = 0, n = charset.length; i < 10; i++) {
-      senha += charset.charAt(Math.floor(Math.random() * n))
-    }
-    setSenhaGerada(senha)
-    setModalVisible(true)
- 
+      senha += charset.charAt(Math.floor(Math.random() * n));
+    } 
+     setSenhaGerada(senha);
+    setModalVisible(true);
   }
+   
+    function salvarSenha() {
+      setSavedPasswords(prevPasswords => {
+        const updatedPassword = [...prevPasswords, senhaGerada];
+        setModalVisible(false);
+      })
+    }
+}
  
   return (
     <View style={styles.container}>
@@ -35,7 +53,7 @@ export default function App() {
       </Modal>
     </View>
   );
-}
+
  
 const styles = StyleSheet.create({
   container: {
